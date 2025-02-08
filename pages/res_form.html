@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Restaurant Reservation - Book a Table</title>
+    <style>
+      body {
+        font-family: cursive, sans-serif;
+        background-color: #f7e0b6;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        flex-direction: column;
+      }
+      .header {
+        background: #b25c2a;
+        width: 100%;
+        padding: 15px;
+        text-align: center;
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        position: absolute;
+        top: 0;
+      }
+      .logo {
+        margin-top: 100px;
+        width: 400px;
+        display: block;
+      }
+      .reservation-container {
+        background: #6b5840;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        color: white;
+        width: 400px;
+      }
+      .reservation-container h2 {
+        margin-bottom: 10px;
+      }
+      .input-field {
+        width: 80%;
+        padding: 10px;
+        margin: 10px 0;
+        border: none;
+        border-radius: 10px;
+      }
+      .reserve-btn {
+        background: #b25c2a;
+        color: white;
+        border: none;
+        margin-top: 20px;
+        padding: 12px;
+        border-radius: 25px;
+        cursor: pointer;
+        width: 90%;
+        font-size: 16px;
+        font-weight: bold;
+      }
+      .reserve-btn:hover {
+        background: #8a4820;
+      }
+      .footer {
+        margin-top: 20px;
+        font-size: 12px;
+        color: #6b5840;
+        text-align: center;
+        width: 100%;
+        bottom: 10px;
+      }
+      .checkbox-label {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">Restaurant Reservation System</div>
+    <img
+      class="logo"
+      src="Screenshot 2025-02-03 220219.png"
+      alt="Restaurant Logo"
+    />
+    <div class="reservation-container">
+      <h2>Book a Table</h2>
+      <p>Fill the details to make a reservation.</p>
+      <form action="/reserve" method="POST">
+        <input
+          class="input-field"
+          type="text"
+          name="surname"
+          placeholder="Surname"
+          required
+        />
+        <input
+          class="input-field"
+          type="text"
+          name="name"
+          placeholder="Name"
+          required
+        />
+        <input
+          class="input-field"
+          type="tel"
+          name="phone"
+          placeholder="Phone"
+          required
+        />
+        <input
+          class="input-field"
+          type="email"
+          name="email"
+          placeholder="Email"
+          required
+        />
+        <textarea
+          class="input-field"
+          name="notes"
+          placeholder="Special requests (optional)"
+          rows="3"
+        ></textarea>
+        <label class="checkbox-label">
+          <input type="checkbox" name="terms" required />
+          I agree to the
+          <a style="color: #b25c2a" href="#">Reservation Terms</a>
+        </label>
+        <p style="font-size: 12px">
+          You can cancel your reservation up to 24 hours before your scheduled
+          time.
+        </p>
+        <button class="reserve-btn" type="submit">Confirm Reservation</button>
+      </form>
+    </div>
+    <div class="footer">
+      <p>&copy; 2025 Restaurant Reservation System. All rights reserved.</p>
+      <p>University Of Piraeus mpsp24013 - mpsp24026</p>
+    </div>
+  </body>
+</html>

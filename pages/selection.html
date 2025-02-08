@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reservation System</title>
+    <style>
+      body {
+        font-family: cursive, sans-serif;
+        background-color: #f7e0b6;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        margin: 0;
+      }
+      .header {
+        background: #b25c2a;
+        width: 100%;
+        padding: 15px;
+        text-align: center;
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        width: 100%;
+        max-width: 800px;
+      }
+      .section {
+        background: #6b5840;
+        color: white;
+        padding: 20px;
+        border-radius: 15px;
+        width: 100%;
+        text-align: center;
+      }
+      .section h2 {
+        margin-bottom: 20px;
+      }
+      .section input,
+      .section select {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+        border: none;
+      }
+      .calendar {
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+      }
+      .map {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin-top: 20px;
+      }
+      .table {
+        width: 100%;
+        height: 80px;
+        background: #b25c2a;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 18px;
+        color: white;
+      }
+      .table.selected {
+        background: #6b5840;
+        border: 2px solid white;
+      }
+      .table.occupied {
+        background: #ccc;
+        cursor: not-allowed;
+      }
+      .next-btn {
+        background: #b25c2a;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 18px;
+        margin-top: 20px;
+        display: none; /* Hidden by default */
+      }
+      .next-btn.active {
+        display: block; /* Show when all selections are made */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">Reservation System</div>
+
+    <div class="container">
+      <!-- People Selection -->
+      <div class="section">
+        <h2>How many people?</h2>
+        <select id="people">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+        </select>
+      </div>
+
+      <!-- Time Selection -->
+      <div class="section">
+        <h2>Select Time</h2>
+        <input type="time" id="time" />
+      </div>
+
+      <!-- Calendar -->
+      <div class="section">
+        <h2>Select Date</h2>
+        <input type="date" id="date" class="calendar" />
+      </div>
+
+      <!-- Table Map -->
+      <div class="section">
+        <h2>Select a Table</h2>
+        <div class="map" id="map">
+          <!-- Tables will be dynamically generated here -->
+        </div>
+      </div>
+
+      <!-- Next Step Button -->
+      <button class="next-btn" id="nextBtn" onclick="goToNextStep()">
+        Next Step
+      </button>
+    </div>
+
+    <script>
+      // Generate Tables for the Map
+      const map = document.getElementById("map");
+      const tables = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]; // 12 tables
+      tables.forEach((table) => {
+        const tableDiv = document.createElement("div");
+        tableDiv.className = "table";
+        tableDiv.textContent = table;
+        tableDiv.addEventListener("click", () => selectTable(table));
+        map.appendChild(tableDiv);
+      });
+
+      // Track Selected Table
+      let selectedTable = null;
+      function selectTable(table) {
+        if (selectedTable) {
+          selectedTable.classList.remove("selected");
+        }
+        selectedTable = document.querySelector(`.table:nth-child(${table})`);
+        selectedTable.classList.add("selected");
+        checkSelections();
+      }
+
+      // Check if all selections are made
+      function checkSelections() {
+        const people = document.getElementById("people").value;
+        const time = document.getElementById("time").value;
+        const date = document.getElementById("date").value;
+
+        if (people && time && date && selectedTable) {
+          document.getElementById("nextBtn").classList.add("active");
+        } else {
+          document.getElementById("nextBtn").classList.remove("active");
+        }
+      }
+
+      // Add event listeners to inputs
+      document
+        .getElementById("people")
+        .addEventListener("change", checkSelections);
+      document
+        .getElementById("time")
+        .addEventListener("change", checkSelections);
+      document
+        .getElementById("date")
+        .addEventListener("change", checkSelections);
+
+      // Redirect to the next step
+      function goToNextStep() {
+        const people = document.getElementById("people").value;
+        const time = document.getElementById("time").value;
+        const date = document.getElementById("date").value;
+        const table = selectedTable.textContent;
+
+        // Save selections to localStorage (or pass them via URL)
+        localStorage.setItem(
+          "reservation",
+          JSON.stringify({ people, time, date, table })
+        );
+
+        // Redirect to the next page
+        window.location.href = "res_form.html";
+      }
+    </script>
+  </body>
+</html>

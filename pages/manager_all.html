@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manager - Reservations</title>
+    <link rel="stylesheet" type="text/css" href="/css/manager_all.css" />
+  </head>
+  <body>
+    <div class="header">
+      Manager Panel - Restaurant Reservations
+      <div class="user-info" style="padding-right: 10px">
+        Logged in as: <span>Username</span>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      </div>
+    </div>
+    <img
+      class="logo"
+      src="/images/Screenshot 2025-02-03 220219.png"
+      alt="Restaurant Logo"
+    />
+    <div class="filter-container">
+      <h3>Filter Reservations</h3>
+      <input type="text" placeholder="Name" />
+      <input type="email" placeholder="Email" />
+      <input type="tel" placeholder="Phone" />
+      <input type="date" />
+      <input type="time" />
+      <button class="logout-btn" style="background-color: #b25c2a">
+        Apply Filters
+      </button>
+    </div>
+    <table class="reservations-table">
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Actions</th>
+      </tr>
+      <tr>
+        <td>John Doe</td>
+        <td>john@example.com</td>
+        <td>123456789</td>
+        <td>2025-02-10</td>
+        <td>19:00</td>
+        <td>
+          <button class="logout-btn">Update</button>
+          <button class="logout-btn">Cancel</button>
+        </td>
+      </tr>
+    </table>
+    <div class="footer">
+      <p>&copy; 2025 Restaurant Reservation System. All rights reserved.</p>
+      <p>University Of Piraeus mpsp24013 - mpsp24026</p>
+    </div>
+    <script src="/scripts/manager_all.js"></script>
+  </body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Restaurant Reservation - Register</title>
+    <link rel="stylesheet" type="text/css" href="/css/register.css" />
+  </head>
+  <body>
+    <div class="header">Restaurant Reservation System</div>
+    <img
+      class="logo"
+      src="/images/Screenshot 2025-02-03 220219.png"
+      alt="Restaurant Logo"
+    />
+    <div class="register-container">
+      <h2>Create an Account</h2>
+      <p>Fill the details to register.</p>
+      <form action="/register" method="POST">
+        <input
+          id="username"
+          class="input-field"
+          type="text"
+          name="username"
+          placeholder="Username"
+          required
+        />
+        <input
+          id="email"
+          class="input-field"
+          type="email"
+          name="email"
+          placeholder="Email"
+          required
+        />
+        <input
+          id="password"
+          class="input-field"
+          type="password"
+          name="password"
+          placeholder="Password"
+          required
+        />
+        <input
+          id="rep_password"
+          class="input-field"
+          type="password"
+          name="rep_password"
+          placeholder="Confirm password"
+          required
+        />
+        <input id="birthyear" class="input-field" type="date" name="dob" required />
+        <label>
+          <br />
+          <input id="terms" type="checkbox" name="terms" required /> I agree to the
+          <a style="color:#b25c2a;" href="#">Terms</a> and <a style="color:#b25c2a;" href="#">Privacy Policy</a>
+        </label>
+        <button class="register-btn" type="submit">Register</button>
+        <a class="login-link" href="/login.html"
+        >Have already account? Login here</a
+      >
+    </div>
+      </form>
+    </div>
+    <div class="footer">
+      <p>&copy; 2025 Restaurant Reservation System. All rights reserved.</p>
+      <p>University Of Piraeus mpsp24013 - mpsp24026</p>
+      <p>
+        By registering, you agree to our <a href="#">Terms</a> and
+        <a href="#">Privacy Policy</a>.
+      </p>
+    </div>
+    <script src="/scripts/register.js"></script>
+  </body>
+</html>

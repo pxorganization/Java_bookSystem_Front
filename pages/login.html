@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Restaurant Reservation - Login</title>
+    <link rel="stylesheet" type="text/css" href="/css/login.css" />
+  </head>
+  <body>
+    <div class="header">Restaurant Reservation System</div>
+    <img
+      class="logo"
+      src="/images/Screenshot 2025-02-03 220219.png"
+      alt="Restaurant Logo"
+    />
+    <div class="login-container">
+      <h2>Login to Your Account</h2>
+      <p>
+        Enter your credentials to access your reservations or manage bookings.
+      </p>
+      <form action="/login" method="POST">
+        <input
+          id="email"
+          class="input-field"
+          type="text"
+          name="email"
+          placeholder="email"
+          required
+        />
+        <input
+          id="password"
+          class="input-field"
+          type="password"
+          name="password"
+          placeholder="Password"
+          required
+        />
+        <button class="login-btn" type="submit">Login</button>
+      </form>
+      <a class="register-link" href="/register.html"
+        >Don't have an account? Register here</a
+      >
+    </div>
+    <div class="footer">
+      <p>&copy; 2025 Restaurant Reservation System. All rights reserved.</p>
+      <p>University Of Piraeus mpsp24013 - mpsp24026</p>
+      <p>
+        By logging in, you agree to our <a href="#">Terms</a> and
+        <a href="#">Privacy Policy</a>.
+      </p>
+    </div>
+    <script src="/scripts/login.js"></script>
+  </body>
+</html>

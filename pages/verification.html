@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reservation Verification</title>
+    <style>
+      body {
+        font-family: cursive, sans-serif;
+        background-color: #f7e0b6;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      .header {
+        background: #b25c2a;
+        width: 100%;
+        padding: 15px;
+        text-align: center;
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        position: absolute;
+        top: 0;
+      }
+      .reservation-details {
+        background: #6b5840;
+        color: white;
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 10px;
+        width: 400px;
+        text-align: center;
+      }
+      .barcode {
+        margin-top: 15px;
+      }
+      .close-btn {
+        background: #b25c2a;
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">Reservation Verification</div>
+
+    <div class="reservation-details" id="reservationDetails">
+      <h2>Reservation Confirmed!</h2>
+      <p><strong>Reservation Number:</strong> <span id="resNumber"></span></p>
+      <p><strong>Table Number:</strong> <span id="tableNumber"></span></p>
+      <p><strong>People:</strong> <span id="people"></span></p>
+      <p><strong>Name:</strong> <span id="name"></span></p>
+      <p><strong>Surname:</strong> <span id="surname"></span></p>
+      <p><strong>Date:</strong> <span id="date"></span></p>
+      <p><strong>Time:</strong> <span id="time"></span></p>
+      <p><strong>Phone:</strong> <span id="phone"></span></p>
+      <p><strong>Email:</strong> <span id="email"></span></p>
+      <p><strong>Notes:</strong> <span id="notes"></span></p>
+      <img class="barcode" id="barcode" src="" alt="Barcode" />
+    </div>
+
+    <script>
+      function validateReservation() {
+        // Προσομοίωση δεδομένων κράτησης (στην πράξη, αυτά έρχονται από backend)
+        const reservation = {
+          resNumber: Math.floor(Math.random() * 100000),
+          tableNumber: Math.floor(Math.random() * 20) + 1,
+          people: 4,
+          name: "John",
+          surname: "Doe",
+          date: "2025-02-15",
+          time: "20:00",
+          phone: "123456789",
+          email: "john@example.com",
+          notes: "Birthday Celebration",
+        };
+
+        // Συμπλήρωση των στοιχείων στο modal
+        document.getElementById("resNumber").textContent =
+          reservation.resNumber;
+        document.getElementById("tableNumber").textContent =
+          reservation.tableNumber;
+        document.getElementById("people").textContent = reservation.people;
+        document.getElementById("name").textContent = reservation.name;
+        document.getElementById("surname").textContent = reservation.surname;
+        document.getElementById("date").textContent = reservation.date;
+        document.getElementById("time").textContent = reservation.time;
+        document.getElementById("phone").textContent = reservation.phone;
+        document.getElementById("email").textContent = reservation.email;
+        document.getElementById("notes").textContent = reservation.notes;
+
+        // Δημιουργία barcode (παράδειγμα με API)
+        const barcodeUrl = `https://api-bwipjs.metafloor.com/?bcid=code128&text=${reservation.resNumber}`;
+        document.getElementById("barcode").src = barcodeUrl;
+      }
+
+      // Προσομοίωση πατήματος του κουμπιού επιβεβαίωσης κράτησης
+      setTimeout(validateReservation, 1000);
+    </script>
+  </body>
+</html>
