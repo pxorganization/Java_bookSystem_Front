@@ -1,0 +1,10 @@
+version: "3.9"
+
+services:
+  web:
+    image: nginx:latest
+    container_name: nginx_server
+    ports:
+      - "8081:80"
+    volumes:
+      - ./html:/usr/share/nginx/html
