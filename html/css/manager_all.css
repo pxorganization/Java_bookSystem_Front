@@ -33,13 +33,18 @@ body {
   border-radius: 5px;
   cursor: pointer;
   font-weight: bold;
+  max-width: max-content;
 }
+
 .logo {
   margin-top: 30px;
   width: 400px;
   display: block;
 }
 .filter-container {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
   background: #6b5840;
   padding: 20px;
   border-radius: 10px;
