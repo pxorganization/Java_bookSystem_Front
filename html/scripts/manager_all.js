@@ -6,6 +6,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupEventListeners();
 });
 
+const welcomeMessage = document.getElementById("welcome-message");
+
 //  Σύνδεση event listeners
 function setupEventListeners() {
   const logoutBtn = document.querySelector(".logout-btn");
@@ -24,7 +26,10 @@ async function verifyUser() {
       headers: { "Content-Type": "application/json" },
     });
 
-    if (!response.ok) {
+    if (response.ok) {
+      const data = await response.json();
+      welcomeMessage.textContent = `Welcome, ${data.user.username}`;
+    } else {
       console.error("Verification Failed");
       window.location.href = "/pages/login.html";
     }

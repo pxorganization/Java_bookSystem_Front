@@ -25,11 +25,14 @@ body {
   top: 15px;
   color: white;
 }
+.letter {
+  padding-left: 20px;
+}
 .logout-btn {
   background: #6b5840;
   color: white;
   border: none;
-  padding: 8px;
+  padding: 10px;
   border-radius: 5px;
   cursor: pointer;
   font-weight: bold;

@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <script src="/scripts/manager_all.js"></script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Manager - Reservations</title>
@@ -9,9 +8,9 @@
   </head>
   <body>
     <div class="header">
-      Manager Panel - Restaurant Reservations
+      <div class="letter">Manager Panel - Restaurant Reservations</div>
       <div class="user-info" style="padding-right: 10px">
-        Logged in as: <span>Username</span>
+        <span id="welcome-message" style="padding-right: 20px"></span>
         <button class="logout-btn" onclick="logout()">Logout</button>
       </div>
     </div>
@@ -67,5 +66,6 @@
       <p>&copy; 2025 Restaurant Reservation System. All rights reserved.</p>
       <p>University Of Piraeus mpsp24013 - mpsp24026</p>
     </div>
+    <script src="/scripts/manager_all.js"></script>
   </body>
 </html>
