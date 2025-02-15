@@ -4,101 +4,38 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Reservation System</title>
-    <style>
-      body {
-        font-family: cursive, sans-serif;
-        background-color: #f7e0b6;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 20px;
-        margin: 0;
-      }
-      .header {
-        background: #b25c2a;
-        width: 100%;
-        padding: 15px;
-        text-align: center;
-        color: white;
-        font-size: 24px;
-        font-weight: bold;
-        margin-bottom: 20px;
-      }
-      .container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
-        width: 100%;
-        max-width: 800px;
-      }
-      .section {
-        background: #6b5840;
-        color: white;
-        padding: 20px;
-        border-radius: 15px;
-        width: 100%;
-        text-align: center;
-      }
-      .section h2 {
-        margin-bottom: 20px;
-      }
-      .section input,
-      .section select {
-        width: 100%;
-        padding: 10px;
-        margin: 10px 0;
-        border-radius: 5px;
-        border: none;
-      }
-      .calendar {
-        width: 100%;
-        max-width: 400px;
-        margin: 0 auto;
-      }
-      .table {
-        width: 100%;
-        height: 80px;
-        background: #b25c2a;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        font-size: 18px;
-        color: white;
-      }
-      .table.selected {
-        background: #6b5840;
-        border: 2px solid white;
-      }
-      .table.occupied {
-        background: #ccc;
-        cursor: not-allowed;
-      }
-      .next-btn {
-        background: #b25c2a;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 18px;
-        margin-top: 20px;
-        display: none; /* Hidden by default */
-      }
-      .next-btn.active {
-        display: block; /* Show when all selections are made */
-      }
-    </style>
+    <script src="https://unpkg.com/konva@9/konva.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
+    <link rel="stylesheet" type="text/css" href="/css/selection.css" />
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   </head>
   <body>
-    <div class="header">Reservation System</div>
+    <div class="header">
+      <div class="letter">Restaurant Reservation System</div>
+      <div class="header-buttons">
+        <button id="login-btn" onclick="location.href='/pages/login.html'">
+          Login
+        </button>
+        <button
+          id="register-btn"
+          onclick="location.href='/pages/register.html'"
+        >
+          Register
+        </button>
+        <div class="welcome_logout">
+          <span id="welcome-message" style="padding-right: 20px"></span>
+          <button id="logout-btn" style="display: none">Logout</button>
+        </div>
+      </div>
+    </div>
 
-    <div class="container">
+    <div class="container correct">
       <!-- People Selection -->
       <div class="section">
-        <h2>How many people?</h2>
+        <h2>Select people</h2>
         <select id="people">
           <option value="1">1</option>
           <option value="2">2</option>
@@ -115,79 +52,55 @@
         <input type="time" id="time" />
       </div>
 
-      <!-- Calendar -->
+      <!-- Calendar (Always Visible) -->
       <div class="section">
         <h2>Select Date</h2>
-        <input type="date" id="date" class="calendar" />
+        <div class="calendar-container">
+          <div id="calendar" class="calendar"></div>
+        </div>
+      </div>
+
+      <!-- Table Selection -->
+      <div class="section">
+        <h2>Select a Table</h2>
+        <div
+          id="container"
+          style="border: 1px solid #ccc; margin: 20px 0; height: 800px"
+        ></div>
       </div>
 
       <!-- Next Step Button -->
-      <button>Next Step</button>
+      <button id="nextPageBtn" class="next-page-btn">Next Step</button>
     </div>
-
+    <div class="footer">
+      <p>&copy; 2025 Restaurant Reservation System. All rights reserved.</p>
+      <p>University Of Piraeus mpsp24013 - mpsp24026</p>
+      <p>
+        By registering, you agree to our <a href="#">Terms</a> and
+        <a href="#">Privacy Policy</a>.
+      </p>
+    </div>
+    <script src="/scripts/selection.js"></script>
     <script>
-      // Generate Tables for the Map
-      const map = document.getElementById("map");
-      const tables = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]; // 12 tables
-      tables.forEach((table) => {
-        const tableDiv = document.createElement("div");
-        tableDiv.className = "table";
-        tableDiv.textContent = table;
-        tableDiv.addEventListener("click", () => selectTable(table));
-        map.appendChild(tableDiv);
+      document.addEventListener("DOMContentLoaded", function () {
+        flatpickr("#calendar", {
+          inline: true,
+          dateFormat: "Y-m-d",
+          minDate: "today",
+        });
+
+        const nextPageBtn = document.getElementById("nextPageBtn");
+        window.addEventListener("scroll", function () {
+          if (
+            window.innerHeight + window.scrollY >=
+            document.body.offsetHeight
+          ) {
+            nextPageBtn.style.display = "block";
+          } else {
+            nextPageBtn.style.display = "none";
+          }
+        });
       });
-
-      // Track Selected Table
-      let selectedTable = null;
-      function selectTable(table) {
-        if (selectedTable) {
-          selectedTable.classList.remove("selected");
-        }
-        selectedTable = document.querySelector(`.table:nth-child(${table})`);
-        selectedTable.classList.add("selected");
-        checkSelections();
-      }
-
-      // Check if all selections are made
-      function checkSelections() {
-        const people = document.getElementById("people").value;
-        const time = document.getElementById("time").value;
-        const date = document.getElementById("date").value;
-
-        if (people && time && date && selectedTable) {
-          document.getElementById("nextBtn").classList.add("active");
-        } else {
-          document.getElementById("nextBtn").classList.remove("active");
-        }
-      }
-
-      // Add event listeners to inputs
-      document
-        .getElementById("people")
-        .addEventListener("change", checkSelections);
-      document
-        .getElementById("time")
-        .addEventListener("change", checkSelections);
-      document
-        .getElementById("date")
-        .addEventListener("change", checkSelections);
-
-      // Redirect to the next step
-      function goToNextStep() {
-        const people = document.getElementById("people").value;
-        const time = document.getElementById("time").value;
-        const date = document.getElementById("date").value;
-        const table = selectedTable.textContent;
-
-        // Save selections to localStorage (or pass them via URL)
-        localStorage.setItem(
-          "reservation",
-          JSON.stringify({ people, time, date, table })
-        );
-
-        // Redirect to the next page
-        window.location.href = "res_form.html";
-      }
     </script>
   </body>
 </html>

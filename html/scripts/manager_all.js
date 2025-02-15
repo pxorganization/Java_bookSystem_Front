@@ -125,8 +125,6 @@ async function applyFilters() {
     time: document.getElementById("date_time").value,
   };
 
-  console.log("Filters:", filters);
-
   await loadReservations(filters);
 }
 

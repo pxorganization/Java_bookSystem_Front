@@ -37,7 +37,7 @@
           window.location.href = "/pages/manager_all.html";
         } else {
           //alert(`Welcome, ${userData.username} with Role: ${userData.role}!`);
-          window.location.href = "/pages/res_form.html";
+          window.location.href = "/pages/selection.html";
         }
       } catch (error) {
         console.error("Login error:", error);
