@@ -1,134 +1,149 @@
-(() => {
-  "use strict";
+"use strict";
 
-  async function verifyUser() {
-    try {
-      const response = await fetch("http://localhost:8080/api/auth/verify", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+document.addEventListener("DOMContentLoaded", async () => {
+  await verifyUser();
+  await loadReservations();
+  setupEventListeners();
+});
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Verification Success:", data);
-        //alert("User is authenticated");
-      } else {
-        console.error("Verification Failed");
-        //alert("Invalid session, please log in again");
-        window.location.href = "/pages/login.html";
-      }
-    } catch (error) {
-      console.error("Network Error:", error);
-      window.location.href = "/pages/login.html";
-    }
-  }
+//  Σύνδεση event listeners
+function setupEventListeners() {
+  const logoutBtn = document.querySelector(".logout-btn");
+  if (logoutBtn) logoutBtn.addEventListener("click", logout);
 
-  window.onload = verifyUser;
+  const filterBtn = document.getElementById("applyFiltersBtn");
+  if (filterBtn) filterBtn.addEventListener("click", applyFilters);
+}
 
-  async function logout() {
-    try {
-      // Στέλνουμε αίτημα στον server για να διαγράψει το JWT και να τερματίσει το session
-      const response = await fetch("http://localhost:8080/api/auth/logout", {
-        method: "POST",
-        credentials: "include", // Για να διαγράψει το cookie
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        // Ανακατεύθυνση στη σελίδα login
-        window.location.href = "/pages/login.html";
-      } else {
-        console.error("Logout failed");
-      }
-    } catch (error) {
-      console.error("Network error:", error);
-    }
-  }
-
-  // Συνδέουμε το κουμπί logout με τη συνάρτηση
-  document.addEventListener("DOMContentLoaded", () => {
-    const logoutBtn = document.querySelector(".logout-btn");
-    if (logoutBtn) {
-      logoutBtn.addEventListener("click", logout);
-    }
-  });
-
-  document.addEventListener("DOMContentLoaded", function () {
-    loadReservations();
-  });
-
-  function loadReservations(filters = {}) {
-    let url = new URL("http://localhost:8080/api/reservation/all");
-
-    Object.keys(filters).forEach((key) => {
-      if (filters[key]) url.searchParams.append(key, filters[key]);
+//  Επαλήθευση χρήστη
+async function verifyUser() {
+  try {
+    const response = await fetch("http://localhost:8080/api/auth/verify", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
     });
 
-    fetch(url)
-      .then((response) => response.json())
-      .then((data) => {
-        const table = document.getElementById("reservationsTable");
-        table.innerHTML = `
-                <tr>
-                    <th>Table Number</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Actions</th>
-                </tr>
-            `;
-
-        data.forEach((reservation) => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-                    <td>${reservation.tableNumber || "N/A"}</td>
-                    <td>${reservation.name}</td>
-                    <td>${reservation.email}</td>
-                    <td>${reservation.phone}</td>
-                    <td>${reservation.date}</td>
-                    <td>${reservation.time}</td>
-                    <td>
-                        <button class="update-btn" onclick="updateReservation(${
-                          reservation.id
-                        })">Update</button>
-                        <button class="cancel-btn" onclick="cancelReservation(${
-                          reservation.id
-                        })">Cancel</button>
-                    </td>
-                `;
-          table.appendChild(row);
-        });
-      })
-      .catch((error) => console.error("Error fetching reservations:", error));
+    if (!response.ok) {
+      console.error("Verification Failed");
+      window.location.href = "/pages/login.html";
+    }
+  } catch (error) {
+    console.error("Network Error:", error);
+    window.location.href = "/pages/login.html";
   }
+}
 
-  function applyFilters() {
-    const filters = {
-      name: document.getElementById("user_name").value,
-      email: document.getElementById("email_address").value,
-      phone: document.getElementById("telephone").value,
-      date: document.getElementById("date_resv").value,
-      time: document.getElementById("date_time").value,
-    };
+//  Logout χρήστη
+async function logout() {
+  try {
+    const response = await fetch("http://localhost:8080/api/auth/logout", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    });
 
-    loadReservations(filters);
+    if (response.ok) {
+      window.location.href = "/pages/login.html";
+    } else {
+      console.error("Logout failed");
+    }
+  } catch (error) {
+    console.error("Network error:", error);
   }
+}
 
-  // Functions for update and cancel actions
-  function updateReservation(id) {
-    alert(`Update reservation with ID: ${id}`);
-    // TODO: Implement update logic
-  }
+//  Φόρτωση κρατήσεων
+async function loadReservations(filters = {}) {
+  try {
+    const response = await fetch(
+      "http://localhost:8080/api/reservation/allfilters",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(filters),
+      }
+    );
 
-  function cancelReservation(id) {
-    alert(`Cancel reservation with ID: ${id}`);
-    // TODO: Implement cancel logic
+    if (!response.ok) throw new Error("Failed to fetch reservations");
+
+    const data = await response.json();
+    renderReservationsTable(data);
+  } catch (error) {
+    console.error("Error fetching reservations:", error);
   }
-})();
+}
+
+//  Εμφάνιση κρατήσεων στον πίνακα
+function renderReservationsTable(reservations) {
+  const table = document.getElementById("reservationsTable");
+  table.innerHTML = `
+      <tr>
+        <th>Table Number</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Actions</th>
+      </tr>
+    `;
+
+  reservations.forEach((reservation) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+        <td>${reservation.tableNumber}</td>
+        <td>${reservation.name}</td>
+        <td>${reservation.email}</td>
+        <td>${reservation.phone}</td>
+        <td>${reservation.date}</td>
+        <td>${reservation.time}</td>
+        <td>
+          <button class="update-btn" data-id="${reservation.id}">Update</button>
+          <button class="cancel-btn" data-id="${reservation.id}">Cancel</button>
+        </td>
+      `;
+    table.appendChild(row);
+  });
+
+  attachTableEventListeners();
+}
+
+//  Εφαρμογή φίλτρων
+async function applyFilters() {
+  const filters = {
+    tableNumber: document.getElementById("table_number").value,
+    name: document.getElementById("user_name").value,
+    email: document.getElementById("email_address").value,
+    phone: document.getElementById("telephone").value,
+    date: document.getElementById("date_resv").value,
+    time: document.getElementById("date_time").value,
+  };
+
+  console.log("Filters:", filters);
+
+  await loadReservations(filters);
+}
+
+//  Σύνδεση event listeners στα κουμπιά του πίνακα
+function attachTableEventListeners() {
+  document.querySelectorAll(".update-btn").forEach((btn) => {
+    btn.addEventListener("click", () => updateReservation(btn.dataset.id));
+  });
+
+  document.querySelectorAll(".cancel-btn").forEach((btn) => {
+    btn.addEventListener("click", () => cancelReservation(btn.dataset.id));
+  });
+}
+
+// ✅ Update κράτησης
+async function updateReservation(id) {
+  alert(`Update reservation with ID: ${id}`);
+  // TODO: Implement update logic
+}
+
+// ✅ Cancel κράτησης
+async function cancelReservation(id) {
+  alert(`Cancel reservation with ID: ${id}`);
+  // TODO: Implement cancel logic
+}
