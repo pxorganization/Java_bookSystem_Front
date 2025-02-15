@@ -25,6 +25,24 @@
         font-weight: bold;
         position: absolute;
         top: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .header-buttons {
+        display: flex;
+        gap: 10px;
+      }
+      .header-buttons button {
+        background: #6b5840;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .header-buttons button:hover {
+        background: #8a4820;
       }
       .logo {
         margin-top: 100px;
@@ -82,7 +100,19 @@
     </style>
   </head>
   <body>
-    <div class="header">Restaurant Reservation System</div>
+    <div class="header">
+      <div>Restaurant Reservation System</div>
+      <div class="header-buttons">
+        <button id="login-btn" onclick="location.href='/login.html'">
+          Login
+        </button>
+        <button id="register-btn" onclick="location.href='/register.html'">
+          Register
+        </button>
+        <button id="logout-btn" style="display: none">Logout</button>
+        <span id="welcome-message"></span>
+      </div>
+    </div>
     <img
       class="logo"
       src="/images/Screenshot 2025-02-03 220219.png"
@@ -142,5 +172,6 @@
       <p>&copy; 2025 Restaurant Reservation System. All rights reserved.</p>
       <p>University Of Piraeus mpsp24013 - mpsp24026</p>
     </div>
+    <script src="/html/scripts/res_form.js"></script>
   </body>
 </html>
