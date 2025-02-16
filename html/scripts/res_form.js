@@ -11,6 +11,7 @@ const loginBtn = document.getElementById("login-btn");
 const registerBtn = document.getElementById("register-btn");
 const logoutBtn = document.getElementById("logout-btn");
 const formBtn = document.getElementById("confirmForm");
+const backBtn = document.getElementById("back-page");
 
 let id;
 const welcomeMessage = document.getElementById("welcome-message");
@@ -90,7 +91,6 @@ async function reservationFields() {
     time: time,
   };
 
-  console.log("Fields being sent:", fields);
   await confirm(fields);
 }
 
@@ -108,9 +108,10 @@ async function confirm(fields) {
       }
     );
     if (response.ok) {
-      console.log("Fetched correct");
+      alert("Reservation Confirmed");
+      window.location.href = "/pages/verification.html";
     } else {
-      console.log("Fetched wrong");
+      alert("Failed");
     }
   } catch (error) {
     console.error(error);
@@ -118,6 +119,9 @@ async function confirm(fields) {
 }
 
 logoutBtn.addEventListener("click", logout);
+backBtn.addEventListener("click", () => {
+  window.location.href = "/pages/selection.html";
+});
 
 formBtn.addEventListener("submit", async function (event) {
   event.preventDefault();

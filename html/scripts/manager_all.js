@@ -62,7 +62,7 @@ async function logout() {
 async function loadReservations(filters = {}) {
   try {
     const response = await fetch(
-      "http://localhost:8080/api/reservation/allfilters",
+      "http://localhost:8080/api/reservation/filters",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -104,8 +104,8 @@ function renderReservationsTable(reservations) {
         <td>${reservation.date}</td>
         <td>${reservation.time}</td>
         <td>
-          <button class="update-btn" data-id="${reservation.id}">Update</button>
-          <button class="cancel-btn" data-id="${reservation.id}">Cancel</button>
+          <button class="logout-btn" data-id="${reservation.id}">Update</button>
+          <button class="logout-btn" data-id="${reservation.id}">Cancel</button>
         </td>
       `;
     table.appendChild(row);
@@ -128,25 +128,145 @@ async function applyFilters() {
   await loadReservations(filters);
 }
 
-//  Σύνδεση event listeners στα κουμπιά του πίνακα
+// Get the modals
+const updateModal = document.getElementById("updateModal");
+const cancelModal = document.getElementById("cancelModal");
+
+// Get the <span> elements that close the modals
+const closeButtons = document.querySelectorAll(".close");
+
+// Get the elements to display reservation IDs
+const updateReservationId = document.getElementById("updateReservationId");
+const cancelReservationId = document.getElementById("cancelReservationId");
+
+// When the user clicks on a button, open the corresponding modal
 function attachTableEventListeners() {
-  document.querySelectorAll(".update-btn").forEach((btn) => {
-    btn.addEventListener("click", () => updateReservation(btn.dataset.id));
+  document.querySelectorAll(".logout-btn").forEach((btn) => {
+    if (btn.textContent === "Update") {
+      btn.addEventListener("click", async () => {
+        const reservationId = btn.dataset.id;
+        updateReservationId.textContent = reservationId;
+
+        try {
+          // Fetch reservation details
+          const response = await fetch(
+            `http://localhost:8080/api/reservation/returnable/${reservationId}`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              credentials: "include",
+            }
+          );
+
+          if (!response.ok) throw new Error("Failed to fetch reservations");
+          const reservation = await response.json();
+
+          // Populate the form fields with reservation data
+          document.getElementById("updateTableNumber").value =
+            reservation.tableNumber;
+          document.getElementById("updatePeople").value = reservation.people;
+          document.getElementById("updateSurname").value = reservation.surname;
+          document.getElementById("updateName").value = reservation.name;
+          document.getElementById("updatePhone").value = reservation.phone;
+          document.getElementById("updateEmail").value = reservation.email;
+          document.getElementById("updateNotes").value = reservation.notes;
+          document.getElementById("updateDate").value = reservation.date;
+          document.getElementById("updateTime").value = reservation.time;
+
+          updateModal.style.display = "block";
+        } catch (error) {
+          console.error("Error fetching reservation details:", error);
+          alert("Failed to fetch reservation details. Please try again.");
+        }
+      });
+    } else if (btn.textContent === "Cancel") {
+      btn.addEventListener("click", () => {
+        cancelReservationId.textContent = btn.dataset.id;
+        cancelModal.style.display = "block";
+      });
+    }
   });
+}
 
-  document.querySelectorAll(".cancel-btn").forEach((btn) => {
-    btn.addEventListener("click", () => cancelReservation(btn.dataset.id));
+// When the user clicks on <span> (x), close the modal
+closeButtons.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    updateModal.style.display = "none";
+    cancelModal.style.display = "none";
   });
-}
+});
 
-// ✅ Update κράτησης
-async function updateReservation(id) {
-  alert(`Update reservation with ID: ${id}`);
-  // TODO: Implement update logic
-}
+// When the user clicks anywhere outside of the modal, close it
+window.addEventListener("click", (event) => {
+  if (event.target === updateModal) {
+    updateModal.style.display = "none";
+  }
+  if (event.target === cancelModal) {
+    cancelModal.style.display = "none";
+  }
+});
 
-// ✅ Cancel κράτησης
-async function cancelReservation(id) {
-  alert(`Cancel reservation with ID: ${id}`);
-  // TODO: Implement cancel logic
-}
+// Confirm Update button
+document.getElementById("confirmUpdate").addEventListener("click", async () => {
+  const reservationId = updateReservationId.textContent;
+
+  // Get updated data from the form
+  const updatedData = {
+    id: reservationId,
+    tableNumber: document.getElementById("updateTableNumber").value,
+    people: document.getElementById("updatePeople").value,
+    surname: document.getElementById("updateSurname").value,
+    name: document.getElementById("updateName").value,
+    phone: document.getElementById("updatePhone").value,
+    email: document.getElementById("updateEmail").value,
+    notes: document.getElementById("updateNotes").value,
+    date: document.getElementById("updateDate").value,
+    time: document.getElementById("updateTime").value,
+  };
+
+  try {
+    // Send the updated data to the server
+    const response = await fetch(
+      `http://localhost:8080/api/reservation/update/${reservationId}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include", // Include cookies for authentication
+        body: JSON.stringify(updatedData),
+      }
+    );
+
+    if (!response.ok) throw new Error("Failed to update reservation");
+
+    alert("Reservation updated successfully!");
+    updateModal.style.display = "none";
+    await loadReservations(); // Refresh the table
+  } catch (error) {
+    console.error("Error updating reservation:", error);
+    alert("Failed to update reservation. Please try again.");
+  }
+});
+
+// Confirm Cancel button
+document.getElementById("confirmCancel").addEventListener("click", async () => {
+  const reservationId = cancelReservationId.textContent;
+  try {
+    const response = await fetch(
+      `http://localhost:8080/api/reservation/cancel/${reservationId}`,
+      {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      }
+    );
+
+    if (!response.ok) throw new Error("Failed to delete the reservation");
+
+    alert("Reservation canceled successfully!");
+    cancelModal.style.display = "none";
+    await loadReservations(); // Refresh the table
+  } catch (error) {
+    console.error("Error canceling reservation:", error);
+    alert("Failed to cancel reservation. Please try again.");
+  }
+});

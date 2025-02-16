@@ -39,14 +39,14 @@ body {
   color: white;
   border: none;
   padding: 10px 20px;
-  border-radius: 5px;
+  border-radius: 10px;
   cursor: pointer;
 }
 .header-buttons button:hover {
   background: #8a4820;
 }
 .logo {
-  width: 400px;
+  width: 500px;
   display: block;
 }
 .reservation-container {
@@ -83,13 +83,22 @@ body {
 .reserve-btn:hover {
   background: #8a4820;
 }
+.previous {
+  background: #b25c2a;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
 .footer {
-  margin-top: 20px;
+  margin-top: 50px;
   font-size: 12px;
   color: #6b5840;
   text-align: center;
   width: 100%;
-  bottom: 10px;
 }
 .checkbox-label {
   display: flex;
