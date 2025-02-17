@@ -34,6 +34,12 @@ body {
   display: flex;
   padding-right: 20px;
 }
+.birth {
+  display: none;
+}
+.isConnected {
+  display: none;
+}
 .header-buttons button {
   background: #6b5840;
   color: white;
@@ -67,6 +73,11 @@ body {
   margin: 10px 0;
   border: none;
   border-radius: 10px;
+}
+#confirmForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .reserve-btn {
   background: #b25c2a;
