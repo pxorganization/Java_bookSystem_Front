@@ -19,7 +19,6 @@ async function verifyUser() {
 
     if (response.ok) {
       const data = await response.json();
-
       welcomeMessage.textContent = `Welcome, ${data.user.username}`;
       loginBtn.style.display = "none";
       registerBtn.style.display = "none";
@@ -31,7 +30,7 @@ async function verifyUser() {
       welcomeMessage.textContent = "";
     }
   } catch (error) {
-    console.error("Network Error:", error);
+    //console.error("Network Error:", error);
     loginBtn.style.display = "block";
     registerBtn.style.display = "block";
     logoutBtn.style.display = "none";
@@ -63,28 +62,21 @@ logoutBtn.addEventListener("click", logout);
 
 const planData = {
   tables: [
-    { shape: "square-4", x: 300, y: 300, reserved: false },
-    { shape: "square-4", x: 700, y: 300, reserved: false },
-    { shape: "square-4", x: 1100, y: 300, reserved: false },
-    { shape: "square-4", x: 300, y: 900, reserved: false },
-    { shape: "square-4", x: 700, y: 900, reserved: false },
-    { shape: "square-4", x: 1100, y: 900, reserved: false },
-    { shape: "square-4", x: 300, y: 1500, reserved: false },
-    { shape: "square-4", x: 700, y: 1500, reserved: false },
-    { shape: "square-4", x: 1100, y: 1500, reserved: false },
-    { shape: "square-4", x: 1500, y: 300, reserved: false },
-    { shape: "square-4", x: 1500, y: 900, reserved: false },
-    { shape: "square-4", x: 1500, y: 1500, reserved: false },
-    { shape: "square-4", x: 1900, y: 300, reserved: false },
-    { shape: "square-4", x: 1900, y: 900, reserved: false },
-    { shape: "square-4", x: 1900, y: 1500, reserved: false },
-    { shape: "square-4", x: 2300, y: 300, reserved: false },
-    { shape: "square-4", x: 2300, y: 900, reserved: false },
-    { shape: "square-4", x: 2300, y: 1500, reserved: false },
-    { shape: "circle-4", x: 300, y: 2000, reserved: false },
-    { shape: "circle-4", x: 900, y: 2000, reserved: false },
-    { shape: "circle-4", x: 1500, y: 2000, reserved: false },
-    { shape: "circle-4", x: 2100, y: 2000, reserved: false },
+    { id: 1, shape: "square-4", x: 300, y: 300, reserved: false },
+    { id: 2, shape: "square-4", x: 700, y: 300, reserved: false },
+    { id: 3, shape: "square-4", x: 1100, y: 300, reserved: false },
+    { id: 4, shape: "square-4", x: 300, y: 900, reserved: false },
+    { id: 5, shape: "square-4", x: 700, y: 900, reserved: false },
+    { id: 6, shape: "square-4", x: 1100, y: 900, reserved: false },
+    { id: 7, shape: "square-4", x: 300, y: 1500, reserved: false },
+    { id: 8, shape: "square-4", x: 700, y: 1500, reserved: false },
+    { id: 9, shape: "square-4", x: 1100, y: 1500, reserved: false },
+    { id: 10, shape: "square-4", x: 1500, y: 300, reserved: false },
+    { id: 11, shape: "square-4", x: 1500, y: 900, reserved: false },
+    { id: 12, shape: "square-4", x: 1500, y: 1500, reserved: false },
+    { id: 13, shape: "square-4", x: 1900, y: 300, reserved: false },
+    { id: 14, shape: "square-4", x: 1900, y: 900, reserved: false },
+    { id: 15, shape: "square-4", x: 1900, y: 1500, reserved: false },
   ],
 };
 
@@ -107,25 +99,14 @@ const tableData = {
       { x: 0.5, y: 1, angle: 270 },
     ],
   },
-  "circle-4": {
-    shape: "circle",
-    radius: 120,
-    chairPositions: [
-      { x: 0, y: 0.5, angle: 0 },
-      { x: 0.5, y: 0, angle: 90 },
-      { x: 1, y: 0.5, angle: 180 },
-      { x: 0.5, y: 1, angle: 270 },
-    ],
-  },
 };
 
 const stage = new Konva.Stage({
   container: "container",
-  width: 800,
-  height: 700,
+  width: 625,
+  height: 500,
   scaleX: 0.3,
   scaleY: 0.3,
-  draggable: false,
 });
 
 const layer = new Konva.Layer();
@@ -133,7 +114,7 @@ stage.add(layer);
 
 let selectedTable = null;
 
-function drawTable(tableConfig) {
+function drawTable(tableConfig, reservedTableIds = []) {
   const data = tableData[tableConfig.shape];
   const group = new Konva.Group({
     x: tableConfig.x,
@@ -150,14 +131,22 @@ function drawTable(tableConfig) {
       height: data.height,
       stroke: "silver",
       strokeWidth: 4,
-      fill: tableConfig.reserved ? "red" : "green",
+      fill:
+        Array.isArray(reservedTableIds) &&
+        reservedTableIds.includes(tableConfig.id)
+          ? "red"
+          : "green",
     });
   } else {
     tableShape = new Konva.Circle({
       radius: data.radius,
       stroke: "silver",
       strokeWidth: 4,
-      fill: tableConfig.reserved ? "red" : "green",
+      fill:
+        Array.isArray(reservedTableIds) &&
+        reservedTableIds.includes(tableConfig.id)
+          ? "red"
+          : "green",
     });
   }
 
@@ -197,11 +186,23 @@ function drawTable(tableConfig) {
 
   // Add click handler to select and reserve table
   tableShape.on("click", function () {
-    if (tableConfig.reserved) return;
+    // Prevent selecting reserved tables
+    if (
+      Array.isArray(reservedTableIds) &&
+      reservedTableIds.includes(tableConfig.id)
+    ) {
+      return;
+    }
 
-    tableConfig.reserved = true;
-    tableShape.fill("red");
-    selectedTable = tableConfig;
+    // Deselect the previously selected table
+    if (selectedTable) {
+      selectedTable.tableShape.fill("green");
+    }
+
+    // Select the new table
+    selectedTable = { id: tableConfig.id, tableShape };
+    tableShape.fill("blue");
+
     layer.draw();
   });
 
@@ -225,32 +226,18 @@ const timeBtn = document.getElementById("time");
 const dateBtn = document.getElementById("calendar");
 const pageBtn = document.getElementById("nextPageBtn");
 
-// Function to update reservation details
-function updateReservationDetails() {
+// Event listener for the "Next Step" button
+pageBtn.addEventListener("click", function () {
   reservationDetails.people = peopleBtn.value;
   reservationDetails.time = timeBtn.value;
   reservationDetails.date = dateBtn.value;
-}
+  reservationDetails.table = selectedTable ? selectedTable.id : null;
 
-// Event listeners for input changes
-peopleBtn.addEventListener("change", function (event) {
-  updateReservationDetails();
-});
-
-timeBtn.addEventListener("change", function (event) {
-  updateReservationDetails();
-});
-
-dateBtn.addEventListener("change", function (event) {
-  updateReservationDetails();
-});
-
-// Event listener for the "Next Step" button
-pageBtn.addEventListener("click", function () {
   if (
     !reservationDetails.people ||
     !reservationDetails.time ||
-    !reservationDetails.date
+    !reservationDetails.date ||
+    !reservationDetails.table
   ) {
     alert("Please fill in all the details and select a table.");
     return;
@@ -263,5 +250,49 @@ pageBtn.addEventListener("click", function () {
   );
 
   // Redirect to the next page
-  window.location.href = "/pages/res_form.html"; // Change this to your actual next page URL
+  window.location.href = "/pages/res_form.html";
 });
+
+// Call updateTables when the page loads or when inputs change
+peopleBtn.addEventListener("change", updateTables);
+timeBtn.addEventListener("change", updateTables);
+dateBtn.addEventListener("change", updateTables);
+
+async function updateTables() {
+  const people = peopleBtn.value;
+  const time = timeBtn.value;
+  const date = dateBtn.value;
+
+  if (!people || !time || !date) return;
+
+  const reservedTableIds = await fetchReservedTables(people, time, date);
+
+  layer.destroyChildren();
+  planData.tables.forEach((table) => drawTable(table, reservedTableIds));
+  layer.draw();
+}
+
+async function fetchReservedTables(people, time, date) {
+  try {
+    const response = await fetch(
+      "http://localhost:8080/api/reservation/tables",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ people, time, date }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch reserved tables");
+    }
+
+    const data = await response.json();
+    return Array.isArray(data) ? data : [];
+  } catch (error) {
+    console.error("Error fetching reserved tables:", error);
+    return [];
+  }
+}

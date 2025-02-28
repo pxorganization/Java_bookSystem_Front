@@ -70,7 +70,7 @@ async function verifyUser() {
       emailField.style.display = "block";
     }
   } catch (error) {
-    console.error("Network Error:", error);
+    //console.error("Network Error:", error);
     loginBtn.style.display = "block";
     registerBtn.style.display = "block";
     logoutBtn.style.display = "none";
@@ -132,11 +132,10 @@ async function reservationFields() {
     email = email;
     notes = document.getElementById("notes").value.trim();
     createAccount = false;
-    birthDate = null;
   } else {
     people = reservationDetails.people;
     userId = null;
-    tableNumber = 12;
+    tableNumber = reservationDetails.table;
     date = reservationDetails.date;
     time = reservationDetails.time;
     surname = document.getElementById("surname").value.trim();
