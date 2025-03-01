@@ -34,7 +34,7 @@
 
         if (userData.role == "MANAGER") {
           //alert(`Welcome, ${userData.username} with Role: ${userData.role}!`);
-          window.location.href = "/pages/manager_all.html";
+          window.location.href = "/pages/manager_dash.html";
         } else {
           //alert(`Welcome, ${userData.username} with Role: ${userData.role}!`);
           window.location.href = "/pages/selection.html";
